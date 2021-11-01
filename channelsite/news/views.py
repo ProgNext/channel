@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
+from .forms import NewsForm
 
 from .models import *
 
@@ -28,4 +29,14 @@ def view_news(request, news_id):
     }
     return render(request, 'news/view_news.html', context=context)
 
-
+def add_news(request):
+    if request.method == 'POST':
+        form = NewsForm(request.POST)
+        if form.is_valid():
+            """print(form.cleaned_data)
+            News.objects.create(**form.cleaned_data)"""
+            news = form.save()
+            return redirect(news)
+    else:
+        form = NewsForm()
+    return render(request, 'news/add_news.html', {'form': form})
